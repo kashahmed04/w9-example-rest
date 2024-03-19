@@ -1,115 +1,123 @@
 import './reset.css';
-import { ToDo } from './types';
+import './styles.css';
 
+import { ToDo } from './ToDosAPI/ToDo.type';
+import { ToDosAPI } from './ToDosAPI'; // when no filename is specified, import from "index.ts"
+
+// select references to DOM elements
+const addButton = document.querySelector('#add') as HTMLButtonElement;
+const createDialog = document.querySelector(
+  '#createDialog',
+) as HTMLDialogElement;
 const createButton = document.querySelector('#create') as HTMLButtonElement;
 const deleteButton = document.querySelector('#delete') as HTMLButtonElement;
 const titleInput = document.querySelector('#title') as HTMLInputElement;
 const descriptionInput = document.querySelector(
   '#description',
 ) as HTMLInputElement;
-const items = document.querySelector('#items') as HTMLUListElement;
+const todoList = document.querySelector('#todoList') as HTMLUListElement;
+
+addButton.addEventListener('click', () => {
+  // clear out any previous entry
+  titleInput.value = '';
+  descriptionInput.value = '';
+  // and show the dialog
+  createDialog.showModal();
+});
+
+// loadToDos : reads all ToDos and displays them in the DOM
+const loadToDos = async () => {
+  // fetch the data
+  const data = await ToDosAPI.read();
+
+  // clear the list
+  todoList.replaceChildren();
+
+  let hasSomeCompleted = false;
+
+  // repopulate the list
+  data.forEach((todo) => {
+    // create <li> parent
+    const li = document.createElement('li');
+
+    // create <input> checkbox
+    const check = document.createElement('input');
+    check.type = 'checkbox';
+    check.dataset['id'] = todo.id; // write the todo.id as data-id="" on the <input>
+    check.checked = todo.complete;
+    check.onclick = async () => {
+      // when clicking the checbox, toggle its status
+      await ToDosAPI.update.toggle(todo.id, todo.complete);
+      // and reload all ToDos
+      loadToDos();
+    };
+
+    // remaining children
+    li.innerHTML = `
+    <div>
+    <h2>${todo.title}</h2>
+    <p>${todo.description}</p>
+    </div>
+    `;
+
+    // put the checkbox first/before the <h2>/<p> children
+    li.prepend(check);
+
+    // add the <li> to the parent <ul>
+    todoList.appendChild(li);
+
+    if (todo.complete) {
+      hasSomeCompleted = true;
+    }
+  });
+
+  if (hasSomeCompleted) {
+    deleteButton.classList.remove('hide');
+  } else {
+    deleteButton.classList.add('hide');
+  }
+};
 
 createButton.addEventListener('click', async () => {
-  let toDo: Partial<ToDo> = {
+  // create a ToDo object with info from the DOM
+  // (we use Omit<ToDo, 'id'> here because we want to be type-safe, but we don't know what the id is)
+  //  https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys
+  let freshToDo: Omit<ToDo, 'id'> = {
     title: titleInput.value || 'ToDo Title',
     description: descriptionInput.value || 'ToDo Description',
     complete: false,
   };
 
-  const request = new Request('http://localhost:3000/todos', {
-    method: 'POST',
-    body: JSON.stringify(toDo),
-  });
+  // send that freshToDo to the API for creation
+  await ToDosAPI.create(freshToDo);
 
-  const response = await fetch(request);
-  if (!response.ok) {
-    console.log('something went wrong creating todo');
-    return;
-  }
-
-  const data = await response.json();
-  console.log(data);
-
+  // then reload all ToDos
   loadToDos();
 });
 
-const toggleTodo = async (id: string, checked: boolean) => {
-  const request = new Request(`http://localhost:3000/todos/${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ complete: !checked }),
-  });
-
-  const response = await fetch(request);
-
-  if (!response.ok) {
-    console.log('something went wrong patching todo ' + id);
-    return;
-  }
-
-  const data: ToDo[] = await response.json();
-  loadToDos();
-};
-
-const deleteTodo = async (id: string) => {
-  const request = new Request(`http://localhost:3000/todos/${id}`, {
-    method: 'DELETE',
-  });
-
-  const response = await fetch(request);
-
-  if (!response.ok) {
-    console.log('something went wrong deleting todo ' + id);
-    return;
-  }
-
-  const data: ToDo[] = await response.json();
-};
-
-const loadToDos = async () => {
-  const request = new Request('http://localhost:3000/todos', {
-    method: 'GET',
-  });
-
-  items.replaceChildren();
-
-  const response = await fetch(request);
-  if (!response.ok) {
-    console.log('something went wrong loading todos');
-    return;
-  }
-
-  const data: ToDo[] = await response.json();
-
-  data.forEach((todo) => {
-    const li = document.createElement('li');
-    const check = document.createElement('input');
-    check.type = 'checkbox';
-    check.dataset['id'] = todo.id;
-    check.checked = todo.complete;
-    check.onclick = () => {
-      toggleTodo(todo.id, todo.complete);
-    };
-    li.innerHTML = `
-    <h2>${todo.title}</h2>
-    <p>${todo.description}</p>
-    `;
-    li.prepend(check);
-    items.appendChild(li);
-  });
-};
-
 deleteButton.addEventListener('click', async () => {
+  // get ALL the checkboxes
+  // (we're making the assumption that the only input in the <li> is a checkbox <input>)
   const checks = document.querySelectorAll<HTMLInputElement>('li input');
-  const promises: Promise<void>[] = [];
+
+  // we need to track all calls to ToDosAPI.delete (so we know when they're all done)
+  const deleteCalls: Promise<void>[] = [];
+
   checks.forEach((check) => {
     if (check.checked) {
-      promises.push(deleteTodo(check.dataset['id'] || ''));
+      // if the ToDo is completed (flagged for delete)
+      // delete it! and keep track of the request in the deleteCalls array
+      deleteCalls.push(ToDosAPI.delete(check.dataset['id'] || ''));
     }
   });
 
-  Promise.all(promises).then(() => {
+  // Promise.all waits until all deleteCalls have resolved/rejected, and then calls its .then() callback
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+  Promise.all(deleteCalls).then(() => {
+    // all the deletes are done, reload all ToDos.
     loadToDos();
   });
 });
 
+// in the beginning, load all ToDos!
 loadToDos();
