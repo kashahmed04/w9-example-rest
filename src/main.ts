@@ -1,8 +1,9 @@
 import './reset.css';
 import './styles.css';
 
+//what exactly are we importing here for both statements and what do they do**
 import { ToDo } from './ToDosAPI/ToDo.type';
-import { ToDosAPI } from './ToDosAPI'; // when no filename is specified, import from "index.ts"
+import { ToDosAPI } from './ToDosAPI'; // when no filename is specified, import from "index.ts" (what does index.ts do)**
 
 // select references to DOM elements
 const addButton = document.querySelector('#add') as HTMLButtonElement;
@@ -22,15 +23,30 @@ addButton.addEventListener('click', () => {
   titleInput.value = '';
   descriptionInput.value = '';
   // and show the dialog
+  //cant press ourside the popup box and have to press escape to exit or fill in an entry**
+  //when we do just .show() why does it not show a popup I thought it would show a popup still and we can click outside of it
+  //to add multiple entries at once for example or exit the popup when we clicked outside of it**
   createDialog.showModal();
 });
 
+//how does everything remain on the page still when we refresh and how does it not reset everything (all the changes we had made)**
+
 // loadToDos : reads all ToDos and displays them in the DOM
+//are all the todos items 
+//in the db.JSON and we access that information from our todosAPI files we made ourselves 
+//in the src (create, delete, index, read, todotype, update) to access the data directly in the db.JSON which is our own created API**
+//the main.ts calls all these files mentioned above to use the API we made based on user input like clicking or entering information
+//(main calls these methods mentioned above so those methods can directly interact with the API when we call them from main
+//to update the API we made)**
+
+//how does the async work again**
+//await means to wait until all the data is read from the index.ts which has to ToDosAPI and we specifically wait for the 
+//read file which reads all the data currently in the API**
 const loadToDos = async () => {
   // fetch the data
   const data = await ToDosAPI.read();
 
-  // clear the list**
+  // clear the list (what does replace children do could we just have changed the innertext to nothing or innerHTML to nothing)**
   todoList.replaceChildren();
 
   let hasSomeCompleted = false; //what does this do**
@@ -38,22 +54,43 @@ const loadToDos = async () => {
   // repopulate the list
   data.forEach((todo) => {
     // create <li> parent
+    //this is for each inidividual item in the ToDo array (each todo item in the todo list is 1 entry in the array) we made in read right**
     const li = document.createElement('li');
 
     // create <input> checkbox
-    //we create the input element for each time we add a new todo**
+    //we create the input element which is a checkbox for each element in the todo array (each toto item)**
     const check = document.createElement('input');
+    //is there no checkbox element so first we have to create an input element then make it of type checkbox (same in HTML if we
+    //had to do it in HTML)**
     check.type = 'checkbox';
+    //so here for each todo item we are creating an ID on that input element which is the ID from the specific todo item**
+    //is this how we create ID's on elements in JS usually by doing element name (or element variable)['id'] = some id as a string**
+    //ID's have to be a string always right**
     check.dataset['id'] = todo.id; // write the todo.id as data-id="" on the <input>
+    //so when we say dataset it gives us a data-id = "some id we put as a string" right**
+    //in JS**
+
+    //so if the complete is true for the specific todo item in the array check the checkbox for that specific todo item**
+    //if its not complete then dont check it and leave it as is**
     check.checked = todo.complete;
+    //what does async do here**
     check.onclick = async () => {
       // when clicking the checbox, toggle its status
+      //go to index.ts then the update method then the toggle does**
+      //and we pass in these two elements into the todosAPI which then passes it to the update file**
+      //could we have done this without an index.ts and pass it straight to update**
       await ToDosAPI.update.toggle(todo.id, todo.complete);
       // and reload all ToDos
+      //we reload after a click event because we changed something right so the list needs to refresh to view the changes (if we 
+      //checked something)**
+      //if the response.JSON in the update does not contain the updated todo then how does it know to check and not check
+      //things once we click a todo box and refresh**
       loadToDos();
     };
 
     // remaining children
+    //for the current todo item we are on in the array of todos returned from the read file,
+    //we put the title and description of the item in the list**
     li.innerHTML = `
     <div>
     <h2>${todo.title}</h2>
@@ -62,34 +99,49 @@ const loadToDos = async () => {
     `;
 
     // put the checkbox first/before the <h2>/<p> children
+    //could we have just put this before the statement that puts the things in the list innerHTML then it would show up
+    //in the beggining of the list item**
     li.prepend(check);
 
     // add the <li> to the parent <ul>
+    //append the current list item that is all updated into the todo list to show on the browser**
     todoList.appendChild(li);
 
+    //if the specific item in the array of todo from read is checked (the complete variable is true) then
+    //make the variable set to true since its checked**
     if (todo.complete) {
       hasSomeCompleted = true;
     }
   });
 
+  //if at least one item is checked make the delete button show in the brwoser otherwise hide it**
+  //the .remove('hide') shows the delete button because it was initially hidden in the HTML if at least 1 item is checked**
+  //the .add('hide') puts the hide back on for the delete button and does not make it show if nothing is checked off in the todo list**
   if (hasSomeCompleted) {
-    deleteButton.classList.remove('hide');
+    deleteButton.classList.remove('hide'); //when we specify a class for an HTML element in the HTML, do we use classList to access
+    //the class in that element in the JS (theres only class in HTML not classList)**
   } else {
     deleteButton.classList.add('hide');
   }
 };
 
+//how do we know when to use async and why do we use it in the create button and delete button**
 createButton.addEventListener('click', async () => {
   // create a ToDo object with info from the DOM
   // (we use Omit<ToDo, 'id'> here because we want to be type-safe, but we don't know what the id is)
+  //what does this mean**
   //  https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys
   let freshToDo: Omit<ToDo, 'id'> = {
     title: titleInput.value || 'ToDo Title',
     description: descriptionInput.value || 'ToDo Description',
     complete: false,
   };
+  //above we create a new entry in the JSON (or the todo array not in the JSON)** and make the checked false
+  //because its not checked**
 
   // send that freshToDo to the API for creation
+
+  //we first send this to the index.ts which has to todosAPI then it sends the information to the create file**
   await ToDosAPI.create(freshToDo);
 
   // then reload all ToDos
@@ -99,21 +151,31 @@ createButton.addEventListener('click', async () => {
 deleteButton.addEventListener('click', async () => {
   // get ALL the checkboxes
   // (we're making the assumption that the only input in the <li> is a checkbox <input>)
+  //if the input was checkboxes and something else what would we do**
+  //this gives us an array of all the checked list items**
+  //here we are saying from the list give us the input (checkbox) specifically since we appended it to the list in loadtodos**
   const checks = document.querySelectorAll<HTMLInputElement>('li input');
 
   // we need to track all calls to ToDosAPI.delete (so we know when they're all done)
+  //go over**
   const deleteCalls: Promise<void>[] = [];
 
+  //why do we have an array for the delete calls**
   checks.forEach((check) => {
     if (check.checked) {
       // if the ToDo is completed (flagged for delete)
       // delete it! and keep track of the request in the deleteCalls array
+      //go over (why would we put an empty string because wouldnt it have an ID if its checked and in the list of todos**
       deleteCalls.push(ToDosAPI.delete(check.dataset['id'] || ''));
     }
   });
 
   // Promise.all waits until all deleteCalls have resolved/rejected, and then calls its .then() callback
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+  //this makes sure everything in the array is taken care of then reloads the todo list in the brwoser (not JSON because its done
+  //in the delte method right)**
+  //does it delete the entries from the array as the problems get resolved and does the promise.all() have to take an array usually**
+  //it only accepts an array of promises though right and it always has a .then after right**
   Promise.all(deleteCalls).then(() => {
     // all the deletes are done, reload all ToDos.
     loadToDos();
@@ -121,11 +183,15 @@ deleteButton.addEventListener('click', async () => {
 });
 
 // in the beginning, load all ToDos!
+//call this initially to load everything in**
 loadToDos();
 
 
 /**
  * NEW NOTES:
+ * 
+ * we have todos in db.json and if we add customers array and it will make the endpoint for us and we can just use it from there**
+ * and when we type it in the browser it gives us an empty array**
  * 
  * CRUD is common to a bunch of web applications we use everyday (does this refer to social media and us doing this with posts or renting something for example)**
  * we can create and update our posts and read it and delete it (all of these things in posts for social media can happen)**
@@ -234,14 +300,17 @@ loadToDos();
  * main.ts is a manager to hook up buttons with API 
  * 
  * read.ts:
- * we make a request and we do local host 3000 because thats where our json file is**
- * our rrad operation happens when we load todos  (const data = await ToDosAPI.read();)
+ * we make a request and we do local host 3000 because thats where our json file is is it usually going to be there
+ * always for the typicode or in general for restful API's**
+ * our read operation happens when we load todos  (const data = await ToDosAPI.read();)
  * 
  * create.ts:
  * json.stringify turns a JSON object into a string and we use it to send to the server and the json.parse is used to 
- * use that string we get from server in code**
+ * use that string we get from server in code as a JS object**
  * we dont return any data because we reload all the todos and we have awaite todoasapi.create(freshtodos) then we 
  * load the totods()
+ * we usually do JSON.stringify() to put data into the server as a string and we do JSON.parse() when we get data to work with it as 
+ * a JS object**
  * 
  * update.ts:
  * we give it an id and if it was checked and partial is like a todo but it only has some fields and**
@@ -250,8 +319,6 @@ loadToDos();
  * 
  * delete.ts we give it the id we are deleting and we delete it 
  * 
- * we have todos in db.json and if we add customers array and it will make the endpoint for us and we can just use it from there**
- * and when we type it in the browser it gives us an empty array**
  * 
  * 
  * representiational maintains the server and the transfer is us when we want to access or edit values from within the server 
