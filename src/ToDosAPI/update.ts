@@ -26,6 +26,7 @@ export const toggleToDo = async (id: string, checked: boolean) => {
     //with another item completely instead of editing some fields (update) or creating a whole new copy (create))**
     //when we create it creates the item at the very bottom of the JSON usually and the JSON does not sort in a specific way right**
     body: JSON.stringify(alteredToDo),
+    //does the body: mean we are sending information to the JSON**
   });
 
   const response = await fetch(request);

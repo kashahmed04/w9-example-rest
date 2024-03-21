@@ -199,6 +199,9 @@ loadToDos();
  * we can create an enititiy and read the informaton for the specific or all entries and update or delete the specific data within our posts or the API
  * are these usually arrays that we use the CRUD for (or is it the restful API we use CRUD for only)**
  * 
+ * for the read part is there a situation where we would want to read only one piece of data because in our code
+ * we usually read the whole JSON in loadtodos to reload all the JSON information in the browser**
+ * 
  * REST
  * 
  * RES is the state of our application and what entities exist and their details (the sever maintaing the data within it)(does this also mean
