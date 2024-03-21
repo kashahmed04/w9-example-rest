@@ -8,6 +8,20 @@
   </head>
   <body>
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog -->
+    <!--so everything in dialog tags within it will show up in the popup which is what dialog is made for**
+      the .showmodal() shows the popup box when we say it in the JS when we target the dialoge tag (only used in the JS)**
+      the .close() closes the popup when we are done and we have to target the dialoge tag and do .close() to close the popup (only in the JS)**
+      by default we cant click outside of the popup and its still active unless we press escape or put an entry right but when we press outside it does not
+      close the popup by default (so we can only open one popup at a time for example)**
+      when we do the dialog tag targetting in the JS .show() is that when we can click outside of popup and interact
+      with things outside of the popup (maybe allowing us to open multple popups at a time for example)** and exit the popup as well when we click outside of it**
+    
+    HTML:
+    * 
+    * <dialoge> gives us some sort of box (like a popup box that floats and we can put things in that box)
+    * and it has a .showmodal() and close() method and by default we cant click anything else when
+    * we are in the popup box and press escape to exit the box (for free with <dialoge>)** (this is all there is to dialog right only the .showmodal(),
+      .close(), and .show() right)**-->
     <dialog id="createDialog">
       <h1>What ToDo?</h1>
       <form method="dialog">
@@ -29,6 +43,9 @@
 
     <h1>ToDos:</h1>
 
+    <!--which element does the border around the element and what moves the plus rectangle down when an entry is added or moves it up
+    when entry is deleted** (how does it know to move up or down)**-->
+    <!--where did we specify checkbox to delete something and how does it cross everything out when we click the checkbox**-->
     <ul id="todoList"></ul>
 
     <button id="add">+</button>
