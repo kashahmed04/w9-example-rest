@@ -2,6 +2,8 @@
 //why does this not take an import of todo like the rest of the files**
 export const deleteToDo = async (id: string) => {
   const request = new Request(`http://localhost:3000/todos/${id}`, { //we need the specific entry so we put the id here**
+  //and it deletes it automatically when we do method: "something" and does the action automatically (same for other methods
+  //for request methods)**
     method: 'DELETE',
   });
 

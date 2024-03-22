@@ -2,8 +2,10 @@ import './reset.css';
 import './styles.css';
 
 //what exactly are we importing here for both statements and what do they do**
-import { ToDo } from './ToDosAPI/ToDo.type';
-import { ToDosAPI } from './ToDosAPI'; // when no filename is specified, import from "index.ts" (what does index.ts do)**
+import { ToDo } from './ToDosAPI/ToDo.type'; //can do comma seperated list of things we want to import (but the thing in the file
+//has to have an export to have an import)
+import { ToDosAPI } from './ToDosAPI'; // when no filename is specified, import from "index.ts" 
+//name exports in the {} have to be the exact name of the export
 
 // select references to DOM elements
 const addButton = document.querySelector('#add') as HTMLButtonElement;
@@ -29,7 +31,8 @@ addButton.addEventListener('click', () => {
   createDialog.showModal();
 });
 
-//how does everything remain on the page still when we refresh and how does it not reset everything (all the changes we had made)**
+//how does everything remain on the page still when we refresh and how does it not reset everything (all the changes we had made)
+//when we call the loadtodos initially then it loads everything so no information is lost
 
 // loadToDos : reads all ToDos and displays them in the DOM
 //are all the todos items 
@@ -42,14 +45,18 @@ addButton.addEventListener('click', () => {
 //how does the async work again**
 //await means to wait until all the data is read from the index.ts which has to ToDosAPI and we specifically wait for the 
 //read file which reads all the data currently in the API**
+
+//the async keyword is a decorator for function and we say this returns a promise and we have to decalre an async to use the
+//await inside of it
 const loadToDos = async () => {
   // fetch the data
-  const data = await ToDosAPI.read();
+  const data = await ToDosAPI.read(); //returns a promise (pause execution of program until read comes back then do the rest of the code)
+  //when it returns a promise it means to pause the program and do this first then run rest of program****
 
-  // clear the list (what does replace children do could we just have changed the innertext to nothing or innerHTML to nothing)**
+  // clear the list (what does replace children do could we just have changed the innertext to nothing or innerHTML to nothing)(yes)
   todoList.replaceChildren();
 
-  let hasSomeCompleted = false; //what does this do**
+  let hasSomeCompleted = false; //initially set the checked as false
 
   // repopulate the list
   data.forEach((todo) => {
@@ -70,6 +77,10 @@ const loadToDos = async () => {
     //so when we say dataset it gives us a data-id = "some id we put as a string" right**
     //in JS**
 
+    //when we read from API the db.json creates the id and todo.id gives us that id and we save the id as an attribute on the element itself
+    //and it makes it availible us to read it in the delete function (dataset gives us an attrituve for an element with the
+    //data- and we could say ['class'] to make a class within an element)
+
     //so if the complete is true for the specific todo item in the array check the checkbox for that specific todo item**
     //if its not complete then dont check it and leave it as is**
     check.checked = todo.complete;
@@ -79,6 +90,7 @@ const loadToDos = async () => {
       //go to index.ts then the update method then the toggle does**
       //and we pass in these two elements into the todosAPI which then passes it to the update file**
       //could we have done this without an index.ts and pass it straight to update**
+      //go over****
       await ToDosAPI.update.toggle(todo.id, todo.complete);
       // and reload all ToDos
       //we reload after a click event because we changed something right so the list needs to refresh to view the changes (if we 
@@ -101,6 +113,7 @@ const loadToDos = async () => {
     // put the checkbox first/before the <h2>/<p> children
     //could we have just put this before the statement that puts the things in the list innerHTML then it would show up
     //in the beggining of the list item**
+    //if we do append above the innerHTML then when we do the innerHTML it basically erases that data
     li.prepend(check);
 
     // add the <li> to the parent <ul>
@@ -114,18 +127,22 @@ const loadToDos = async () => {
     }
   });
 
+  //what exactly puts the data on the page when we add or remove something like we see it was it the CSS****
+
   //if at least one item is checked make the delete button show in the brwoser otherwise hide it**
   //the .remove('hide') shows the delete button because it was initially hidden in the HTML if at least 1 item is checked**
   //the .add('hide') puts the hide back on for the delete button and does not make it show if nothing is checked off in the todo list**
   if (hasSomeCompleted) {
-    deleteButton.classList.remove('hide'); //when we specify a class for an HTML element in the HTML, do we use classList to access
-    //the class in that element in the JS (theres only class in HTML not classList)**
+    deleteButton.classList.remove('hide'); //add the class list hide or remove it (removes the hide class name to make it show up
+    // or add it back to hide it)
   } else {
     deleteButton.classList.add('hide');
   }
 };
 
-//how do we know when to use async and why do we use it in the create button and delete button**
+//we never say .close() so how does it close the modal**
+
+// how do we know when to use async and why do we use it in the create button and delete button**
 createButton.addEventListener('click', async () => {
   // create a ToDo object with info from the DOM
   // (we use Omit<ToDo, 'id'> here because we want to be type-safe, but we don't know what the id is)
@@ -141,7 +158,7 @@ createButton.addEventListener('click', async () => {
 
   // send that freshToDo to the API for creation
 
-  //we first send this to the index.ts which has to todosAPI then it sends the information to the create file**
+  //we first send this to the index.ts which has to todosAPI then it sends the information to the create file****
   await ToDosAPI.create(freshToDo);
 
   // then reload all ToDos
@@ -261,8 +278,9 @@ loadToDos();
  * how do we know when the put the "/" before something for restful API's like we do before customer because we are using 1 JSON file so why so
  * many "/" for folders** (slide 9-12)**
  * 
- * typicode uses a JSON file as a database locally and lets us have RESTFUL purposes and its a develeopment tool for prototyping 
- * and not in everyday use because** (slide 13)** (this creates the JSON server to run locally for us in our browser??)**
+ * typicode uses a JSON file as a database (restful server)** locally and lets us have RESTFUL purposes and its a 
+ * develeopment tool for prototyping and not in everyday use because** (slide 13)** 
+ * (this creates the JSON server to run locally for us in our browser??)**
  * since JSON server     we use vite to    ** (slide 13)** so
  * concurrenly lets us use vite server and JSON server at the same time in the same vite command terminal window and we can close all at once with control c
  * instead of multiple commands to close the two processes at once since its only 1 command to turn on the vite server and JSON server at the same time**

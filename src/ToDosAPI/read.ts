@@ -7,11 +7,11 @@ export const readToDos = async () => {
   //as the database so we can directly access the JSON information from the server instead of a specific file like db.JSON**
   //could we have also used db.JSON here for a request for all files where we use requests** (does this apply to all files that
   //have the request)**
-  const request = new Request('http://localhost:3000/todos', {
+  const request = new Request('http://localhost:3000/todos', { //if we want to get a specific entry we add the id here
     method: 'GET',
   });
 
-  //await for the JSON data to get returned back**
+  //await for the JSON data to get returned back (we need it to get the data)
   const response = await fetch(request);
 
   if (!response.ok) {
@@ -28,6 +28,8 @@ export const readToDos = async () => {
   //can we edit description and title for a todo or once we make it then it stays that way (once we make it then it stays that way)**
   //why does ToDo show up in green here and not blue like when we imported it above**
   const data: ToDo[] = await response.json();
+  //the response we get back is an array of todo items and its basically the todos JSON file and its an array of each todo object
+  //this is promises so the response returns a promise so we need the response to get actual the JSON and not a promise
 
   // we actually return the data this time!
   // because the app will actually use it

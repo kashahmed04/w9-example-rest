@@ -8,15 +8,13 @@
   </head>
   <body>
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog -->
-    <!--so everything in dialog tags within it will show up in the popup which is what dialog is made for**
-      the .showmodal() shows the popup box when we say it in the JS when we target the dialoge tag (only used in the JS)**
-      the .close() closes the popup when we are done and we have to target the dialoge tag and do .close() to close the popup (only in the JS)**
+    <!--so everything in dialog tags within it will show up in the popup which is what dialog is made for (yes)
+      the .showmodal() shows the popup box when we say it in the JS when we target the dialoge tag (only used in the JS)(yes)
+      the .close() closes the popup when we are done and we have to target the dialoge tag and do .close() to close the popup (only in the JS) (yes)
       by default we cant click outside of the popup and its still active unless we press 
       escape or put an entry right but when we press outside it does not
-      close the popup by default (so we can only open one popup at a time for example)**
-      when we do the dialog tag targetting in the JS .show() is that when we can click outside of popup and interact
-      with things outside of the popup (maybe allowing us to open multple popups at a time for example)**
-      and exit the popup as well when we click outside of it**
+      close the popup by default (so we can only open one popup at a time for example) (yes)
+      when we do the dialog tag targetting in the JS .show() it shows us it not in popup view and we have to adjust it ourself
     
     HTML:
     * 
@@ -24,14 +22,19 @@
     * and it has a .showmodal() and close() method and by default we cant click anything else outside the popup box when
     * we are in the popup box and press escape to exit the box (for free with <dialoge> when we do .showmodal() right)** 
       (this is all there is to dialog right only the .showmodal(),
-      .close(), and .show() right)**
-      do we change the location of the popup in the CSS if we dont want it to be in the middle of the screen by default**-->
+      .close(), and .show() right) (yes)
+     -->
     <dialog id="createDialog">
       <h1>What ToDo?</h1>
       <!--what does form do here and when do we use it in HTML** (do we usually use it when we want to get information
         from the user?? Would we use this when getting a number from the user as well to use in JS or is that different)**
         do we always use method in form elements and do we usually always put dialog for method and use form and method
-         when we make a dialog box or when do we know to use it**-->
+         when we make a dialog box or when do we know to use it 
+        
+        when we have HTML form element and we have button inside of it when we click that button it runs the submit action
+      using the method we provide and we get set form method to be POST, PUT, DELETE, GET, etc. so when we set the method
+      to dialouge it tells the dialoge to close and we have the create button in the form and when we click the button it closes
+      the form-->
       <form method="dialog">
         <div>
           <label>Title</label>
@@ -52,11 +55,13 @@
     <h1>ToDos:</h1>
 
     <!--which element does the border around the element and what moves the plus rectangle down when an entry is added or moves it up
-    when entry is deleted** (how does it know to move up or down)**-->
-    <!--where did we specify checkbox to delete something and how does it cross everything out when we click the checkbox**-->
+    when entry is deleted** (how does it know to move up or down)*****-->
+    <!--where did we specify checkbox to delete something and how does it cross everything out when we click the checkbox****-->
     <ul id="todoList"></ul>
 
     <button id="add">+</button>
+    <!--is the class hide built in so it initially starts off as not showing and when we click a checkbox to delete we would 
+    target the element in the JS and say .class.show??**-->
     <button class="hide" id="delete">Delete Completed ToDos</button>
 
     <script type="module" src="./main.ts"></script>
