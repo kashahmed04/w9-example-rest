@@ -34,7 +34,9 @@
         when we have HTML form element and we have button inside of it when we click that button it runs the submit action
       using the method we provide and we get set form method to be POST, PUT, DELETE, GET, etc. so when we set the method
       to dialouge it tells the dialoge to close and we have the create button in the form and when we click the button it closes
-      the form-->
+      the form (is it always when we have a button in the form whenever we click it then it closes automatically could we have also
+      done a radio button or a checkbox for when they were done and it would work the same way and it would close automatically
+      if they were in the form (it has to be a button to close for the method dialog)-->
       <form method="dialog">
         <div>
           <label>Title</label>
@@ -55,13 +57,20 @@
     <h1>ToDos:</h1>
 
     <!--which element does the border around the element and what moves the plus rectangle down when an entry is added or moves it up
-    when entry is deleted** (how does it know to move up or down)*****-->
-    <!--where did we specify checkbox to delete something and how does it cross everything out when we click the checkbox****-->
+    when entry is deleted** (how does it know to move up or down)
+    (this is the HTML in general so it gets pushed down when we add something or goes back up when we delete something)
+    there are todos and the button shows up after them (I thought static did not do this and left the space when we 
+    removed an element or added one)****-->
+    <!--where did we specify checkbox to delete something and how does it cross everything out when we click the checkbox
+     li input:checked + div {
+    text-decoration: line-through;}-->
     <ul id="todoList"></ul>
 
     <button id="add">+</button>
     <!--is the class hide built in so it initially starts off as not showing and when we click a checkbox to delete we would 
-    target the element in the JS and say .class.show??**-->
+    target the delete button element in the JS and say .class.show(button element or "hide")
+    (or add("hide"))(difference between show and add for classList in JS
+    with HTML elements and .hide(button element or "hide") and .remove("hide"))??****-->
     <button class="hide" id="delete">Delete Completed ToDos</button>
 
     <script type="module" src="./main.ts"></script>

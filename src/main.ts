@@ -4,7 +4,7 @@ import './styles.css';
 //what exactly are we importing here for both statements and what do they do**
 import { ToDo } from './ToDosAPI/ToDo.type'; //can do comma seperated list of things we want to import (but the thing in the file
 //has to have an export to have an import)
-import { ToDosAPI } from './ToDosAPI'; // when no filename is specified, import from "index.ts" 
+import { ToDosAPI } from './ToDosAPI'; // when no filename is specified, import from "index.ts"
 //name exports in the {} have to be the exact name of the export
 
 // select references to DOM elements
@@ -35,15 +35,15 @@ addButton.addEventListener('click', () => {
 //when we call the loadtodos initially then it loads everything so no information is lost
 
 // loadToDos : reads all ToDos and displays them in the DOM
-//are all the todos items 
-//in the db.JSON and we access that information from our todosAPI files we made ourselves 
+//are all the todos items
+//in the db.JSON and we access that information from our todosAPI files we made ourselves
 //in the src (create, delete, index, read, todotype, update) to access the data directly in the db.JSON which is our own created API**
 //the main.ts calls all these files mentioned above to use the API we made based on user input like clicking or entering information
 //(main calls these methods mentioned above so those methods can directly interact with the API when we call them from main
 //to update the API we made)**
 
 //how does the async work again**
-//await means to wait until all the data is read from the index.ts which has to ToDosAPI and we specifically wait for the 
+//await means to wait until all the data is read from the index.ts which has to ToDosAPI and we specifically wait for the
 //read file which reads all the data currently in the API**
 
 //the async keyword is a decorator for function and we say this returns a promise and we have to decalre an async to use the
@@ -51,7 +51,7 @@ addButton.addEventListener('click', () => {
 const loadToDos = async () => {
   // fetch the data
   const data = await ToDosAPI.read(); //returns a promise (pause execution of program until read comes back then do the rest of the code)
-  //when it returns a promise it means to pause the program and do this first then run rest of program****
+  //when it returns a promise it means to pause the program and do this first then run rest of program**
 
   // clear the list (what does replace children do could we just have changed the innertext to nothing or innerHTML to nothing)(yes)
   todoList.replaceChildren();
@@ -90,10 +90,10 @@ const loadToDos = async () => {
       //go to index.ts then the update method then the toggle does**
       //and we pass in these two elements into the todosAPI which then passes it to the update file**
       //could we have done this without an index.ts and pass it straight to update**
-      //go over****
+      //go over**
       await ToDosAPI.update.toggle(todo.id, todo.complete);
       // and reload all ToDos
-      //we reload after a click event because we changed something right so the list needs to refresh to view the changes (if we 
+      //we reload after a click event because we changed something right so the list needs to refresh to view the changes (if we
       //checked something)**
       //if the response.JSON in the update does not contain the updated todo then how does it know to check and not check
       //things once we click a todo box and refresh**
@@ -127,7 +127,7 @@ const loadToDos = async () => {
     }
   });
 
-  //what exactly puts the data on the page when we add or remove something like we see it was it the CSS****
+  //what exactly puts the data on the page when we add or remove something like we see it was it the CSS (the HTML)
 
   //if at least one item is checked make the delete button show in the brwoser otherwise hide it**
   //the .remove('hide') shows the delete button because it was initially hidden in the HTML if at least 1 item is checked**
@@ -158,7 +158,8 @@ createButton.addEventListener('click', async () => {
 
   // send that freshToDo to the API for creation
 
-  //we first send this to the index.ts which has to todosAPI then it sends the information to the create file****
+  //we first send this to the index.ts which has to todosAPI then it sends the information to the create file**
+  //we could have done this without the index.ts
   await ToDosAPI.create(freshToDo);
 
   // then reload all ToDos
@@ -203,47 +204,68 @@ deleteButton.addEventListener('click', async () => {
 //call this initially to load everything in**
 loadToDos();
 
-
 /**
  * NEW NOTES:
- * 
- * we have todos in db.json and if we add customers array and it will make the endpoint for us and we can just use it from there**
- * and when we type it in the browser it gives us an empty array**
- * 
+ *
+ * we have todos in db.json and if we add customers array and it will make the endpoint for us and we can just use it from there
+ * and when we type it in the browser it gives us an empty array
+ * we could add endpoints by adding things into the db.JSON file automatically
+ * are endpoints each object in a JSON array or are they the arrays themselves in the JSON file with all the objects inside**
+ * an endpoint is the url to get to a specific locaiton in the API via a url
+ *
  * CRUD is common to a bunch of web applications we use everyday (does this refer to social media and us doing this with posts or renting something for example)**
  * we can create and update our posts and read it and delete it (all of these things in posts for social media can happen)**
- * 
+ * can we read multiple specific items or only one item or the whole JSON file usually (for all items it may give some information (more simple
+ * representation for list view and for the object specific view we could have more specific view))(when we get list view
+ * we could be having options to click on but detailed view is more specific things so its more work for list view if we
+ * dont use much of it)
+ * can we create, update, and delete multiple items in a JSON at the same time or is it one at a time and can we delete a whole JSON
+ * at a time or not**
+ *
  * we can create an enititiy and read the informaton for the specific or all entries and update or delete the specific data within our posts or the API
  * are these usually arrays that we use the CRUD for (or is it the restful API we use CRUD for only)**
- * 
+ *
+ * is CRUD only used for restful API's (we can do CRUD without REST and we can do REST without CRUD and it can be read only API)(go over
+ * examples of each would CRUD be social media posts within REST nad REST without CRUD would be a read only API and not rest
+ * of CRUD there)****
+ *
  * for the read part is there a situation where we would want to read only one piece of data because in our code
- * we usually read the whole JSON in loadtodos to reload all the JSON information in the browser**
- * 
+ * we usually read the whole JSON in loadtodos to reload all the JSON information in the browser (we would only read
+ * one piece of data if we want specific information)
+ *
+ * read returned the whole object for our API
+ *
+ * only some API's may return less information with a list of all items right some could return everything its just based on the API same
+ * for specific entries too right****
+ *
+ *
  * REST
- * 
- * RES is the state of our application and what entities exist and their details (the sever maintaing the data within it)(does this also mean
- * when it maintains the data within the server it then it also updates or adjusts based on we put/delete/edit/get or is that 
- * more of the transfer aspect)** (slide 5)**
+ *
+ * RES is the state of our application and what entities exist and their details (the sever maintaing the data within it)**(does this also mean
+ * when it maintains the data within the server it then it also updates or adjusts based on we put/delete/edit/get)(RES)
  * (when it says the server will respond
- * with a representation of the state of an enitity is this when we also ask for the data (all or specific)** or is it more of the transfer aspect)(slide 6)**
+ * with a representation of the state of an enitity is this when we also ask for the data or is it more of the transfer aspect)(slide 6)**
  * does this also refer to when we want to put/delete/edit/get the server will respond
  * with a representation of the state of an enitity**
- * 
- * for the RES part is the data in the server usually going to be a JSON file or an array only or an array within the JSON for each entry (each entry
- * would be an array of data in the JSON)**
- * 
+ *
+ * for the RES part the data in the server usually going to be a JSON
+ *
  * why is it when I type the screen moves up a bit in visual studio**
- * 
- * the transfer aspect is it sends us information from API when we request it so we can get the information and change it and work with data 
+ *
+ * the transfer aspect is it sends us information from API when we request it so we can get the information and change it and work with data
  * returned if needed (like using get, post, put, delete, and patch)**
- * 
+ * we can also send data to change to the API (with post, put, and patch)**
+ *
  * Roy came up with REST API and everyone adopted it as framework**
  * putting it together REST is arhcitectural pattern** (with get,post,put,delete,and patch) (what about update
  * or is that CRUD??))** for performing CRUD operations** (read,create,update,delete) (slide 7)**
- * 
+ *
  * so restful API's are API's that follow the rest patterns like shown on slide 9-11 (common way to access data when working with all restful API's)**
  * (we know how to access the data already since restful API's have the same way to work with data like slide 9-11)**
- * 
+ *
+ * REST is the code and the CRUD is what the code does**
+ *
+ *
  * REST API:
  * we can use get,post,put,patch,delete,etc.
  * when we get things we read them (single item or the whole array??)**
@@ -254,94 +276,115 @@ loadToDos();
  * does put replace the whole array within the JSON (if we change only the fields and not the whole book entry then its patch)??**
  * and delete is to delete things
  * (all above slide 9)**
- * 
+ *
  * when we say get /books give us list (or all the array entries for books within JSON??)** of all books in applciation (slide 9)**
- * when we post books we create a book and we create a new entry for the book and the * represents sending data to API rather than reading 
+ * when we post books we create a book and we create a new entry for the book and the * represents sending data to API rather than reading
  * (is that what it means by "these send a request body with data")(slide 9)**
  * get books 1 means we get the book at location 1 (the entry is an array within the JSON?)** (slide 9)**
- * by putting we are replacing the book at id 1 and we put a new book in its place (how would we do that if we only do put /books/1 
+ * by putting we are replacing the book at id 1 and we put a new book in its place (how would we do that if we only do put /books/1
  * and not put in another entry to replace it)(slide 9)**
- * patch is modifying a little bit whats already there and not putting a complete new book there (how would we do that if we only do put /books/1 
+ * patch is modifying a little bit whats already there and not putting a complete new book there (how would we do that if we only do put /books/1
  * and not put in things to edit the book 1)(slide 9)**
  * delete says to go to books 1 and delete that book (and eveyrthing else (the arrays of each book)** moves up 1 place for the empty spot in the JSON
  * usually when we delete??)**(slide 9)**
  * can we use delete to delete the arrays of books within the JSON (everything inside of it)** or is it only 1 entry for delete** (slide 9)**
- * 
+ *
  * can we use post, put, and patch to apply to the whole JSON instead of the specific book entry to modify the whole JSON** (slide 9)**
- * 
- * if we have todos list its the same approach or with customers and so much of what we do on the web is CRUD and RESTFUL APIS so there is 
+ *
+ * if we have todos list its the same approach or with customers and so much of what we do on the web is CRUD and RESTFUL APIS so there is
  * a common starrting point and knowing how to access data**
- * 
+ *
  * when we have /customers/1/orders and it says we have a list (1 array in JSON for each customer??)**
  * of customers and we get the first customer and their list of orders and we can
  * go farther and say /customers/1/orders/1 to get the first item the first customer ordered for get** (nesting on slide 12)**
  * how do we know when the put the "/" before something for restful API's like we do before customer because we are using 1 JSON file so why so
- * many "/" for folders** (slide 9-12)**
- * 
- * typicode uses a JSON file as a database (restful server)** locally and lets us have RESTFUL purposes and its a 
- * develeopment tool for prototyping and not in everyday use because** (slide 13)** 
- * (this creates the JSON server to run locally for us in our browser??)**
+ * many "/" for folders** (slide 9-12)** (before the "/" does that refer to the local host http://localhost:3000 then the /customers
+ * to get specific data)****
+ *
+ * typicode uses a JSON file as a database (restful server)** locally and lets us have RESTFUL purposes and its a
+ * develeopment tool for prototyping and not in everyday use because** (its local and we need some server to run it
+ * and its not very secure and anyone could hit our endpoint and edit values and its meant to test and prototype rest API's)**** (slide 13)**
+ * (this creates the JSON server to run locally for us in our browser locally)
  * since JSON server     we use vite to    ** (slide 13)** so
  * concurrenly lets us use vite server and JSON server at the same time in the same vite command terminal window and we can close all at once with control c
  * instead of multiple commands to close the two processes at once since its only 1 command to turn on the vite server and JSON server at the same time**
- * 
+ *
+ * runs on local host 3000 and reads db.json and says this is the state of our data base
+ * and it updates the contents of the db.json file so db.json is always up to date and
+ * thats how things persist when we reload the application because when we call
+ * loadtodos it gets the latest state of the JSON returns it to the browser
+ * and the brwoser clears the list and regenerates the items (we have new data in our local browser and resfresh)**
+ * it says its only for developing and prototyping because it runs on a local server only available to our computer**
+ * while the concurrently lets us run it on all browsers or it just shows us our HTML, CSS, and JS**
+ * vite is local so it will create a dev server and the concurrently is for npm start
+ *
+ * typicode is the JSON server by using the db.JSON and the vite is
+ * doing our HTML, CSS, and JS and we cant work with one without the other****
+ * so without concurrently we would need one terminal window for npm start
+ * and we would need one for npm run rest or npm run jsonserver--db.JSON
+ * typicode shows our API information but vite formats it out on the browser with interactinos with HTML, CSS, and JS so we need both
+ * and we use them via concurrently to have same command for both****
+ *
  * CODE:
- * 
+ *
  * we have a todo application to add something and we can create a todo list and check it off as well as have defaults and check off
  * some items and delete them and we can also reload the application and the state remains the same**
- * 
+ *
  * db.json is where everything and all of our changes get written to (when we add something or remove something it reads and writes
  * from the db.json file)
  * we made a get request to todos which is the reference to db.json and when we post something to create an item a GET is made
  * to update the json automatically??**
- * when we check off something the complete field is true otherwise its false in db.json 
+ * when we check off something the complete field is true otherwise its false in db.json
  * when we delete things is shows each item we deleted seperately then makes a GET request again to update db.json**
- * 
+ *
  * does GET always run after action to update db.json**
- * 
+ *
  * HTML:
- * 
+ *
  * <dialoge> gives us some sort of box (like a popup box that floats and we can put things in that box)
  * and it has a .showmodal() and close() method and by default we cant click anything else when
  * we are in the popup box and press escape to exit the box (for free with <dialoge>)
- * 
+ *
  * main.TS:
- * 
+ *
  * the todos API we import the whole folder and by default it references the index.ts if we dont specify the folder**
  * we do await.todos.read() to**
- * 
+ *
  * we refernce things in the HTML
  * the omit class in TS does    and we dont put an ID so a random one gets created for us when we add something to the list**
  * we assume the input in the list are all checkboxes for the queryselector for the li input and if not we would**
- * 
+ *
  * we push our deleted data into our deleted array because**
  * we use promise.all to say wait until all the delete calls have finished then do something and once all delete calls are finished
  * then we do our todos and the todos call on the bottom is the intial call to start the method the first time**
- * 
- * main.ts is a manager to hook up buttons with API 
- * 
+ *
+ * main.ts is a manager to hook up buttons with API
+ *
  * read.ts:
  * we make a request and we do local host 3000 because thats where our json file is is it usually going to be there
  * always for the typicode or in general for restful API's**
  * our read operation happens when we load todos  (const data = await ToDosAPI.read();)
- * 
+ *
  * create.ts:
- * json.stringify turns a JSON object into a string and we use it to send to the server and the json.parse is used to 
+ * json.stringify turns a JSON object into a string and we use it to send to the server and the json.parse is used to
  * use that string we get from server in code as a JS object**
- * we dont return any data because we reload all the todos and we have awaite todoasapi.create(freshtodos) then we 
+ * we dont return any data because we reload all the todos and we have awaite todoasapi.create(freshtodos) then we
  * load the totods()
- * we usually do JSON.stringify() to put data into the server as a string and we do JSON.parse() when we get data to work with it as 
+ * we usually do JSON.stringify() to put data into the server as a string and we do JSON.parse() when we get data to work with it as
  * a JS object**
- * 
+ *
  * update.ts:
  * we give it an id and if it was checked and partial is like a todo but it only has some fields and**
  * we have the link be the todos with the id so we know which id to patch and we stringify the altered todo then
  * make it as a string to show up in the server
- * 
- * delete.ts we give it the id we are deleting and we delete it 
- * 
- * 
- * 
- * representiational maintains the server and the transfer is us when we want to access or edit values from within the server 
- * 
+ *
+ * delete.ts we give it the id we are deleting and we delete it
+ *
+ *
+ *
+ * representiational maintains the server and the transfer is us when we want to access or edit values from within the server
+ *
+ * we can do nesting in RESTAPI
+ * it would be local host number/customers then rest of data
+ *
  */
